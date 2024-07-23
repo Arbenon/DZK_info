@@ -1,2 +1,3 @@
 # DZK_info
-Download many info from DZK
+1. Запхни усі потрібні кадастрові номери у файл cadastral.txt
+2. Запуск
