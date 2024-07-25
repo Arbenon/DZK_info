@@ -12,13 +12,16 @@ import os
 
 # Налаштування Chrome
 chrome_options = Options()
-chrome_options.add_argument("user-data-dir=/home/arbenon/.config/google-chrome")
 
+# Вказати шлях до профілю
+chrome_options.add_argument("profile-directory=Yevhenii Stakhovskyi")  # Змінюйте "Default" на назву вашого профілю, якщо потрібно
+
+# Запуск Chrome з вказаним профілем
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 try:
     driver.get("https://e.land.gov.ua/back/service/main")
-    time.sleep(10)
+    time.sleep(30)
 except TimeoutException:
     print("Failed to load the main page.")
     driver.quit()
@@ -50,17 +53,17 @@ if rights_info_link:
 def process_cadastral_number(driver, cadastral_number):
     # Натискання на "Пошук інформації"
     try:
-        search_info_link = WebDriverWait(driver, 1).until(
+        search_info_link = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Пошук інформації')]"))
         )
     except TimeoutException:
         try:
-            search_info_link = WebDriverWait(driver, 1).until(
+            search_info_link = WebDriverWait(driver, 2).until(
                 EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Пошук інформації"))
             )
         except TimeoutException:
             try:
-                search_info_link = WebDriverWait(driver, 1).until(
+                search_info_link = WebDriverWait(driver, 2).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='Пошук інформації']"))
                 )
             except TimeoutException:
@@ -70,10 +73,10 @@ def process_cadastral_number(driver, cadastral_number):
     if search_info_link:
         search_info_link.click()
 
-    time.sleep(1)
+    time.sleep(2)
 
     try:
-        cadastral_number_field = WebDriverWait(driver, 1).until(
+        cadastral_number_field = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.XPATH, "//label[contains(text(), 'Вкажіть кадастровий номер земельної ділянки, на яку Ви бажаєте отримати інформацію')]/following-sibling::input"))
         )
         cadastral_number_field.send_keys(cadastral_number)
@@ -81,17 +84,17 @@ def process_cadastral_number(driver, cadastral_number):
         print(f"Failed to find cadastral number field for {cadastral_number}.")
         return False
 
-    time.sleep(1)
+    time.sleep(2)
 
     cadastral_number_field.send_keys(Keys.TAB)
     driver.switch_to.active_element.send_keys(Keys.SPACE)
 
-    time.sleep(1)
+    time.sleep(2)
 
     driver.switch_to.active_element.send_keys(Keys.TAB)
     driver.switch_to.active_element.send_keys(Keys.ENTER)
 
-    time.sleep(1)
+    time.sleep(2)
     return True
 
 # Перевірка наявності і читання файлу
